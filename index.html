@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Un jardín amarillo 💛</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:radial-gradient(circle at 50% 30%,#20223d 0%,#101222 48%,#070912 100%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:manipulation;user-select:none;color:#fff}
+.scene{position:fixed;inset:0;overflow:hidden}.stars{position:absolute;inset:0}
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff7c2;opacity:.65;animation:twinkle 2.8s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.9;transform:scale(1.35)}}
+.moon{position:absolute;right:8vw;top:7vh;width:72px;height:72px;border-radius:50%;background:#fff4ad;box-shadow:0 0 35px #fff0a044}
+.moon:after{content:"";position:absolute;right:13px;top:4px;width:68px;height:68px;border-radius:50%;background:#111326}
+.title{position:absolute;top:7%;left:50%;transform:translateX(-50%);text-align:center;width:90%;z-index:5;text-shadow:0 3px 20px #0008;pointer-events:none}
+.title h1{margin:0;font-size:clamp(24px,7vw,42px);font-weight:800;color:#fff8c8}.title p{margin:8px 0 0;font-size:14px;color:#dddaf0;opacity:.9}
+.ground{position:absolute;left:-10%;right:-10%;bottom:-8%;height:30%;border-radius:50% 50% 0 0/18% 18% 0 0;background:linear-gradient(#171b16,#0d110d);box-shadow:0 -12px 35px #0008 inset}
+.grass{position:absolute;left:0;right:0;bottom:17%;height:35px;background:linear-gradient(175deg,transparent 45%,#24351e 46%,#172616 100%);opacity:.9}
+.flower{position:absolute;bottom:15%;width:90px;height:190px;transform:translate(-50%,25px) scale(.15);transform-origin:bottom center;animation:grow .85s cubic-bezier(.2,.9,.2,1) forwards;z-index:3}
+@keyframes grow{0%{transform:translate(-50%,25px) scale(.15);opacity:0}65%{transform:translate(-50%,-5px) scale(1.06);opacity:1}100%{transform:translate(-50%,0) scale(1);opacity:1}}
+.stem{position:absolute;left:43px;bottom:0;width:8px;height:125px;border-radius:8px;background:linear-gradient(90deg,#1c5b2a,#5ca83f,#194b24)}
+.leaf{position:absolute;width:48px;height:22px;background:#4f9d38;border-radius:100% 0 100% 0;bottom:55px}.leaf.left{left:3px;transform:rotate(20deg)}.leaf.right{left:43px;transform:scaleX(-1) rotate(20deg)}
+.head{position:absolute;left:45px;top:0;width:0;height:0}.petal{position:absolute;width:38px;height:58px;background:#ffd92f;border-radius:50% 50% 45% 45%;transform-origin:50% 100%;box-shadow:inset 0 -4px 0 #eebd20,0 0 12px #ffd72d33}
+.p1{transform:translate(-19px,0) rotate(0deg)}.p2{transform:translate(-19px,0) rotate(60deg)}.p3{transform:translate(-19px,0) rotate(120deg)}.p4{transform:translate(-19px,0) rotate(180deg)}.p5{transform:translate(-19px,0) rotate(240deg)}.p6{transform:translate(-19px,0) rotate(300deg)}
+.center{position:absolute;left:-19px;top:38px;width:38px;height:38px;border-radius:50%;background:#8a5a16;border:5px solid #b87817;box-shadow:inset 0 0 0 4px #6d4511}.face{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;gap:8px;font-size:12px;color:#3b250b;font-weight:900}.face:after{content:"• ᴗ •";transform:translateY(1px)}
+.hint{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);z-index:8;padding:10px 16px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff1c;backdrop-filter:blur(8px);font-size:13px;color:#fff9d5;pointer-events:none;transition:.5s}.hint.hide{opacity:0;transform:translateX(-50%) translateY(12px)}
+.spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffe86a;box-shadow:0 0 15px #ffe86a;animation:spark .8s ease-out forwards;z-index:7;pointer-events:none}
+@keyframes spark{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.1)}}
+.message{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);z-index:10;opacity:0;pointer-events:none;text-align:center;padding:18px 24px;border-radius:22px;background:#15172bdd;border:1px solid #fff3a633;box-shadow:0 15px 50px #0008;transition:.7s}
+.message.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.message strong{display:block;color:#ffe76a;font-size:25px}.message span{display:block;margin-top:5px;color:#eee;font-size:13px}
+</style>
+</head>
+<body>
+<div class="scene" id="scene"><div class="stars" id="stars"></div><div class="moon"></div>
+<div class="title"><h1>Un pequeño jardín 💛</h1><p>Toca la pantalla y haz florecer una flor.</p></div>
+<div class="ground"></div><div class="grass"></div><div id="garden"></div>
+<div class="hint" id="hint">✨ Toca para hacer florecer</div>
+<div class="message" id="message"><strong>🌻 Para ti 💛</strong><span>Que nunca te falten motivos para florecer.</span></div>
+</div>
+<script>
+const scene=document.getElementById('scene'),garden=document.getElementById('garden'),stars=document.getElementById('stars'),hint=document.getElementById('hint'),message=document.getElementById('message');
+for(let i=0;i<65;i++){const s=document.createElement('span');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*78+'%';s.style.animationDelay=Math.random()*3+'s';stars.appendChild(s)}
+function makeFlower(x,size=.8){const f=document.createElement('div');f.className='flower';f.style.left=Math.max(7,Math.min(93,x))+'%';f.style.transformOrigin='bottom center';f.style.filter='drop-shadow(0 7px 8px #0005)';f.innerHTML=`
+<div class="stem"></div><div class="leaf left"></div><div class="leaf right"></div><div class="head">
+<div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div><div class="petal p5"></div><div class="petal p6"></div>
+<div class="center"><div class="face"></div></div></div>`;garden.appendChild(f);setTimeout(()=>f.remove(),120000)}
+function burst(x,y){for(let i=0;i<8;i++){const p=document.createElement('div');p.className='spark';p.style.left=x+'px';p.style.top=y+'px';p.style.setProperty('--dx',(Math.random()*80-40)+'px');p.style.setProperty('--dy',(Math.random()*-90-20)+'px');scene.appendChild(p);setTimeout(()=>p.remove(),850)}}
+let count=0;function bloom(clientX,clientY){const rect=scene.getBoundingClientRect(),x=clientX-rect.left;makeFlower(x/rect.width*100,.65+Math.random()*.5);burst(x,clientY-rect.top);count++;hint.classList.add('hide');if(count===7)message.classList.add('show');if(count===10)setTimeout(()=>message.classList.remove('show'),3000)}
+scene.addEventListener('pointerdown',e=>bloom(e.clientX,e.clientY));
+[8,18,29,42,55,67,78,90].forEach((x,i)=>setTimeout(()=>makeFlower(x,.55+Math.random()*.35),250+i*130));
+</script>
+</body>
+</html>
